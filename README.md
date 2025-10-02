@@ -136,12 +136,12 @@ You'll be prompted to enter either:
 
 ### Build the Docker Image
 
-1. Build the backend image:
+1. From the project root, build the backend image:
    ```bash
    docker build -t task-management-backend .
    ```
 
-2. Run the container:
+2. Run the container (make sure you have a .env file in the project root):
    ```bash
    docker run -p 8000:8000 --env-file .env task-management-backend
    ```
