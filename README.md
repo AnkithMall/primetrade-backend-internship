@@ -200,6 +200,26 @@ coverage report -m
 
 # Generate HTML coverage report
 coverage html
+
+## 📊 Test Coverage Report
+
+### Current Coverage (90% Overall)
+
+#### Backend Components
+- `app/auth/auth.py`: 100% coverage
+- `app/crud/task.py`: 100% coverage
+- `app/schemas/`: 100% coverage
+- `app/routers/task.py`: 86% coverage
+- `app/routers/user.py`: 90% coverage
+- `app/auth/dependencies.py`: 71% coverage
+- `app/crud/user.py`: 55% coverage
+
+#### Test Files
+- `tests/test_task.py`: 100% coverage
+- `tests/test_user.py`: 88% coverage
+
+### View Detailed Report
+After running the tests with coverage, you can view the detailed HTML report by opening `htmlcov/index.html` in your browser.
 ```
 
 ## 🔒 Environment Variables

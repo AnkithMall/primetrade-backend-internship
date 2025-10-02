@@ -63,7 +63,11 @@ def update_task_route(request: Request, task_id: str, task_data: TaskCreate, cur
         raise HTTPException(status_code=404, detail="Task not found")
     if str(task["owner_id"]) != str(current_user["_id"]) and current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
-    updated_task = update_task(task_id, task_data.dict())
+    update_task(task_id, task_data.model_dump())
+    # Fetch the updated task
+    updated_task = get_task_by_id(task_id)
+    if not updated_task:
+        raise HTTPException(status_code=404, detail="Task not found after update")
     return {
         "id": str(updated_task["_id"]),
         "title": updated_task["title"],
