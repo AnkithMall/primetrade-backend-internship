@@ -157,8 +157,8 @@ This application is deployed using:
 - **Database**: MongoDB Atlas (Cloud)
 
 ### Live Demo
-- **Frontend**: [Live Demo](https://your-vercel-app.vercel.app)
-- **API Documentation**: [Swagger UI](https://your-azure-container-app.azurecontainerapps.io/docs)
+- **Frontend**: [Live Demo](https://primetrade-backend-internship.vercel.app)
+- **API Documentation**: [Swagger UI](https://task-backend.wonderfulmushroom-7d76aaa2.westus2.azurecontainerapps.io/docs)
 
 ## 🔒 Environment Variables
 
