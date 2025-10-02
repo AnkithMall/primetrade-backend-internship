@@ -31,7 +31,7 @@ A full-stack application featuring secure authentication, role-based access cont
 
 - **Backend**: Python (FastAPI)
 - **Frontend**: React.js with TypeScript
-- **Database**: PostgreSQL
+- **Database**: MongoDB
 - **Authentication**: JWT
 - **API Documentation**: Swagger UI
 - **Containerization**: Docker
@@ -40,7 +40,7 @@ A full-stack application featuring secure authentication, role-based access cont
 
 - Node.js (v18+)
 - Python (3.10+)
-- PostgreSQL (v14+)
+- MongoDB Atlas
 - Docker (optional)
 
 ## 🚀 Quick Start
@@ -69,12 +69,7 @@ A full-stack application featuring secure authentication, role-based access cont
    # Update the .env file with your configuration
    ```
 
-5. Run database migrations:
-   ```bash
-   alembic upgrade head
-   ```
-
-6. Start the backend server:
+5. Start the backend server:
    ```bash
    uvicorn app.main:app --reload
    ```
@@ -82,6 +77,35 @@ A full-stack application featuring secure authentication, role-based access cont
    The API will be available at `http://localhost:8000`
    
    Access Swagger documentation at `http://localhost:8000/docs`
+
+### Admin Management
+
+#### 1. Create a New Admin User
+
+Use the `create_admin.py` script to create a new admin user:
+
+```bash
+# From the backend directory
+python scripts/create_admin.py
+```
+
+You'll be prompted to enter:
+- Admin email
+- Admin name
+- Password
+
+#### 2. Promote Existing User to Admin
+
+Use the `promote_user.py` script to promote an existing user to admin:
+
+```bash
+# From the backend directory
+python scripts/promote_user.py
+```
+
+You'll be prompted to enter either:
+- User's email address
+- User's ObjectId
 
 ### Frontend Setup
 
@@ -105,20 +129,62 @@ A full-stack application featuring secure authentication, role-based access cont
    ```bash
    npm run dev
    ```
-
+   
    The frontend will be available at `http://localhost:5173`
 
-## 🐳 Docker Setup (Optional)
+## 🐳 Docker Setup
 
-1. Build and run the application:
+### Build the Docker Image
+
+1. Build the backend image:
    ```bash
-   docker-compose up --build
+   docker build -t task-management-backend .
    ```
 
-2. Access the application:
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:8000`
+2. Run the container:
+   ```bash
+   docker run -p 8000:8000 --env-file .env task-management-backend
+   ```
+
+   - The API will be available at `http://localhost:8000`
    - Swagger UI: `http://localhost:8000/docs`
+
+## 🚀 Deployment
+
+This application is deployed using:
+- **Backend**: Hosted on Azure Container Apps
+- **Frontend**: Deployed on Vercel
+- **Database**: MongoDB Atlas (Cloud)
+
+### Live Demo
+- **Frontend**: [Live Demo](https://your-vercel-app.vercel.app)
+- **API Documentation**: [Swagger UI](https://your-azure-container-app.azurecontainerapps.io/docs)
+
+## 🔒 Environment Variables
+
+### Backend (.env)
+
+```
+# MongoDB Atlas
+MONGO_URI=your_mongodb_atlas_connection_string
+
+# JWT
+SECRET_KEY=your-secret-key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# CORS
+FRONTEND_URL=http://localhost:5173
+
+# App
+ENVIRONMENT=development
+DEBUG=True
+```
+
+### Frontend (.env)
+```
+VITE_API_URL=http://localhost:8000/api/v1
+```
 
 ## 🔒 Environment Variables
 
@@ -126,7 +192,7 @@ A full-stack application featuring secure authentication, role-based access cont
 
 ```
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/taskdb
+MONGO_URI=your_mongodb_atlas_connection_string
 
 # JWT
 SECRET_KEY=your-secret-key

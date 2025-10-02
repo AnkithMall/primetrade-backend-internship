@@ -2,10 +2,13 @@
 from fastapi import FastAPI
 from app.routers import user, task
 from fastapi.middleware.cors import CORSMiddleware
-
+import os 
+from dotenv import load_dotenv
+load_dotenv()
 origins = [
     "http://localhost:5173",  # your frontend
     "http://127.0.0.1:5173",
+    os.getenv("FRONTEND_URL")
 ]
 
 app = FastAPI(title="Backend Developer Assignment", version="1.0")
