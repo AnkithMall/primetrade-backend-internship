@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=0
+      - MONGODB_URL=${MONGODB_ATLAS_URI}  # Will be provided via .env
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - mongo-express  # Optional: Only if you want to use mongo-express
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: mongo-express for database management (not needed for production)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo_express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=${MONGODB_ATLAS_URI}
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USERNAME}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD}
+    depends_on:
+      - backend
+
+networks:
+  default:
+    driver: bridge
