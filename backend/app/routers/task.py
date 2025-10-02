@@ -3,12 +3,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.task import TaskCreate, TaskOut
 from app.crud.task import create_task, get_tasks_by_owner, get_task_by_id, update_task, delete_task
 from app.auth.dependencies import get_current_user, require_admin
+from app.core.rate_limiter import limiter
+from fastapi import Request
 
 router = APIRouter()
 
 # Create Task
 @router.post("/", response_model=TaskOut)
-def create_task_route(task: TaskCreate, current_user=Depends(get_current_user)):
+@limiter.limit("100/hour")
+def create_task_route(request: Request, task: TaskCreate, current_user=Depends(get_current_user)):
     db_task = create_task(task.title, task.description, current_user["_id"], task.status)
     return {
         "id": str(db_task["_id"]),
@@ -20,7 +23,8 @@ def create_task_route(task: TaskCreate, current_user=Depends(get_current_user)):
 
 # Get My Tasks
 @router.get("/", response_model=list[TaskOut])
-def get_my_tasks(current_user=Depends(get_current_user)):
+@limiter.limit("100/hour")
+def get_my_tasks(request: Request, current_user=Depends(get_current_user)):
     tasks = get_tasks_by_owner(current_user["_id"])
     return [
         {
@@ -35,7 +39,8 @@ def get_my_tasks(current_user=Depends(get_current_user)):
 
 # Get Single Task (Owner or Admin)
 @router.get("/{task_id}", response_model=TaskOut)
-def get_task(task_id: str, current_user=Depends(get_current_user)):
+@limiter.limit("100/hour")
+def get_task(request: Request, task_id: str, current_user=Depends(get_current_user)):
     task = get_task_by_id(task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -51,7 +56,8 @@ def get_task(task_id: str, current_user=Depends(get_current_user)):
 
 # Update Task
 @router.put("/{task_id}", response_model=TaskOut)
-def update_task_route(task_id: str, task_data: TaskCreate, current_user=Depends(get_current_user)):
+@limiter.limit("100/hour")
+def update_task_route(request: Request, task_id: str, task_data: TaskCreate, current_user=Depends(get_current_user)):
     task = get_task_by_id(task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -68,7 +74,8 @@ def update_task_route(task_id: str, task_data: TaskCreate, current_user=Depends(
 
 # Delete Task
 @router.delete("/{task_id}")
-def delete_task_route(task_id: str, current_user=Depends(get_current_user)):
+@limiter.limit("100/hour")
+def delete_task_route(request: Request, task_id: str, current_user=Depends(get_current_user)):
     task = get_task_by_id(task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")

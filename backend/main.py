@@ -3,6 +3,11 @@ from fastapi import FastAPI
 from app.routers import user, task
 from fastapi.middleware.cors import CORSMiddleware
 import os 
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from app.core.rate_limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+
 from dotenv import load_dotenv
 load_dotenv()
 origins = [
@@ -12,6 +17,10 @@ origins = [
 ]
 
 app = FastAPI(title="Backend Developer Assignment", version="1.0")
+# Attach limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

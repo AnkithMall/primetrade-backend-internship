@@ -6,11 +6,15 @@ from app.schemas.user import UserCreate, UserOut
 from app.crud.user import create_user, get_user_by_email
 from app.auth.auth import create_access_token
 from app.auth.utils import verify_password
+from slowapi.util import get_remote_address
+from app.core.rate_limiter import limiter
+from fastapi import Request
 
 router = APIRouter()
 
 @router.post("/register", response_model=UserOut)
-def register_user(user: UserCreate):
+@limiter.limit("5/minute")
+def register_user(request: Request,user: UserCreate):
     db_user = get_user_by_email(user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -23,7 +27,8 @@ def register_user(user: UserCreate):
     }
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@limiter.limit("5/minute")
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     user = get_user_by_email(form_data.username)
     if not user or not verify_password(form_data.password, user["password_hash"]):
         raise HTTPException(

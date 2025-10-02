@@ -20,6 +20,7 @@ A full-stack application featuring secure authentication, role-based access cont
   - Input validation and sanitization
   - Comprehensive error handling
   - Swagger API documentation
+  - Rate limiting (100 requests/hour per endpoint)
 
 - **Frontend**
   - Responsive React.js interface
@@ -159,6 +160,47 @@ This application is deployed using:
 ### Live Demo
 - **Frontend**: [Live Demo](https://primetrade-backend-internship.vercel.app)
 - **API Documentation**: [Swagger UI](https://task-backend.wonderfulmushroom-7d76aaa2.westus2.azurecontainerapps.io/docs)
+
+## 🧪 Running Tests
+
+### Backend Tests
+
+To run the backend tests:
+
+```bash
+# From the backend directory
+cd backend
+
+# Install test dependencies if not already installed
+pip install pytest
+
+# Run all tests
+pytest -v
+
+# Run specific test file
+pytest -v tests/test_task.py
+
+# Run tests with coverage report
+pytest --cov=app tests/
+```
+
+### Test Coverage
+
+To generate a coverage report:
+
+```bash
+# Install coverage if not already installed
+pip install coverage
+
+# Run tests with coverage
+coverage run -m pytest
+
+# Generate coverage report
+coverage report -m
+
+# Generate HTML coverage report
+coverage html
+```
 
 ## 🔒 Environment Variables
 
